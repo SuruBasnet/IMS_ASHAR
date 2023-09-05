@@ -13,8 +13,11 @@ class CompanyInfo(models.Model):
 class UserInfo(AbstractUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=50)
-    username = models.CharField(unique=True,max_length=200)
-    company_info = models.ForeignKey(CompanyInfo,on_delete=models.CASCADE)
+    username = models.CharField(max_length=200)
+    company_info = models.ForeignKey(CompanyInfo,on_delete=models.CASCADE,null=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
 class ProductType(models.Model):
     name = models.CharField(max_length=200)
@@ -24,6 +27,7 @@ class Product(models.Model):
     description = models.TextField()
     quantity = models.IntegerField()
     type = models.ForeignKey(ProductType,on_delete=models.CASCADE)
+
 
 class BuyerInfo(models.Model):
     name = models.CharField(max_length=300)
