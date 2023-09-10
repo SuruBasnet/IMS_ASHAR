@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import *
 from rest_framework.generics import GenericAPIView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 # Create your views here.
 # @api_view(['GET'])
@@ -12,9 +16,22 @@ from rest_framework.generics import GenericAPIView
 #     serializer = CompanyInfoSerializer(company_info_objects,many=True)
 #     return Response(serializer.data)
 
+@api_view(['POST'])
+def login(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    user = authenticate(username=email,password=password)
+    if user == None:
+        return Response('User not found!')
+    else:
+        token,_ = Token.objects.get_or_create(user=user)
+        return Response(token.key)
+
+
 class CompanyInfoApiView(GenericAPIView):
     queryset = CompanyInfo.objects.all()
     serializer_class = CompanyInfoSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self,request):
         company_info_objects = self.get_queryset()
@@ -32,6 +49,7 @@ class CompanyInfoApiView(GenericAPIView):
 class CompanyInfoIdApiView(GenericAPIView):
     queryset = CompanyInfo.objects.all()
     serializer_class = CompanyInfoSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self,request,pk):
         try:
