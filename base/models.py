@@ -12,7 +12,7 @@ class CompanyInfo(models.Model):
 
 class UserInfo(AbstractUser):
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=200)
     username = models.CharField(max_length=200)
     company_info = models.ForeignKey(CompanyInfo,on_delete=models.CASCADE,null=True)
 
