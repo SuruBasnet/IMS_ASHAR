@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'base.apps.BaseConfig',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    "django_filters"
 ]
 
 MIDDLEWARE = [
@@ -85,9 +86,12 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
+    # Authentication - TokenAuthentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',  # <-- And here
     ],
+    # Filter
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # Password validation

@@ -11,6 +11,8 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from .permissions import CustomModelPermission
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 # Create your views here.
 # @api_view(['GET'])
@@ -74,11 +76,15 @@ class CompanyInfoApiView(GenericAPIView):
     queryset_model = CompanyInfo
     queryset = CompanyInfo.objects.all()
     serializer_class = CompanyInfoSerializer
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter]
+    # filterset_fields = ['address']
+    search_fields = ['address','name']
     permission_classes = [IsAuthenticated,CustomModelPermission]
 
     def get(self,request):
         company_info_objects = self.get_queryset()
-        serializer = CompanyInfoSerializer(company_info_objects,many=True)
+        filter_objects = self.filter_queryset(company_info_objects)
+        serializer = CompanyInfoSerializer(filter_objects,many=True)
         return Response({'data':serializer.data})
     
     def post(self,request):
